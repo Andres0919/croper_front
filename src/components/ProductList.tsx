@@ -66,7 +66,7 @@ const ProductList = () => {
   };
 
   return (
-    <Box p={2} sx={{ width: "100%" }}>
+    <Box p={2}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -99,6 +99,7 @@ const ProductList = () => {
                   <TableCell>Description</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Category</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
