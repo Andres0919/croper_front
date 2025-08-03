@@ -12,10 +12,19 @@ import {
   Typography,
   Box,
   Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchProducts } from "../features/products/productSlice";
 import { useNavigate } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import axios from "../api/http";
 
 const ProductList = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +33,7 @@ const ProductList = () => {
     loading,
     error,
   } = useAppSelector((state) => state.products);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -42,6 +52,17 @@ const ProductList = () => {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteId) return;
+    try {
+      await axios.delete(`/products/${deleteId}`);
+      dispatch(fetchProducts()); // refrescar lista
+      setDeleteId(null);
+    } catch (err) {
+      console.error("Error deleting product", err);
+    }
   };
 
   return (
@@ -89,6 +110,22 @@ const ProductList = () => {
                       <TableCell>{product.description || "-"}</TableCell>
                       <TableCell>${product.price.toFixed(2)}</TableCell>
                       <TableCell>{product.category || "-"}</TableCell>
+
+                      <TableCell>
+                        <IconButton
+                          onClick={() =>
+                            navigate(`/products/edit/${product._id}`)
+                          }
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={() => setDeleteId(product._id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
@@ -105,6 +142,21 @@ const ProductList = () => {
           />
         </Paper>
       )}
+      <Dialog open={!!deleteId} onClose={() => setDeleteId(null)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this product? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteId(null)}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
