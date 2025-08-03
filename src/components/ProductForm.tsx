@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import type { Product } from "../types/Products";
+import { useNavigate } from "react-router-dom";
 
 interface ProductFormProps {
   initialValues?: Partial<Product>;
@@ -19,10 +20,15 @@ const ProductForm = ({
   );
   const [price, setPrice] = useState(initialValues.price || 0);
   const [category, setCategory] = useState(initialValues.category || "");
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({ name, description, price, category });
+  };
+
+  const handleCancel = () => {
+    navigate("/products");
   };
 
   return (
@@ -67,9 +73,12 @@ const ProductForm = ({
         margin="normal"
       />
 
-      <Box mt={2}>
+      <Box mt={2} display="flex" gap={2}>
         <Button type="submit" variant="contained" color="primary" fullWidth>
           {submitText}
+        </Button>
+        <Button onClick={handleCancel} variant="outlined" fullWidth>
+          Volver
         </Button>
       </Box>
     </Box>
