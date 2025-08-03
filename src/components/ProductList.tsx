@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "../api/http";
+import LogoutButton from "./LogoutButton";
 
 const ProductList = () => {
   const dispatch = useAppDispatch();
@@ -74,13 +75,16 @@ const ProductList = () => {
         mb={2}
       >
         <Typography variant="h5">Product List</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/products/create")}
-        >
-          New Product
-        </Button>
+        <Box display="flex" gap={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/products/create")}
+          >
+            New Product
+          </Button>
+          <LogoutButton />
+        </Box>
       </Box>
 
       {loading ? (
